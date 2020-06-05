@@ -158,8 +158,8 @@ func main() {
 	 <br/>
     <br>
 </body>`)
-	front.LaunchServer()
-	err2 := http.ListenAndServe(":9090", nil) // setting listening port
+	serverPort := front.LaunchServer()
+	err2 := http.ListenAndServe(serverPort, nil) // setting listening port
 	if err2 != nil {
 		fmt.Println(err2)
 		log.Fatal("ListenAndServe: ", err2)
