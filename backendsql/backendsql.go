@@ -1,12 +1,10 @@
 package backendsql
 
 import (
-	"bufio"
 	"context"
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"reflect"
 	"strconv"
 
@@ -47,7 +45,7 @@ func columnheaders(r interface{}) string {
 }
 
 func grabrows(r interface{}) string {
-	Scanner := bufio.NewScanner(os.Stdin)
+	//Scanner := bufio.NewScanner(os.Stdin)
 	text := ""
 	reflection := reflect.ValueOf(r)
 	for i := 0; i < reflection.NumField(); i++ {
@@ -67,6 +65,20 @@ func grabrows(r interface{}) string {
 							text += "" + ","
 						} else {
 							text += x.Index(ii).Elem().String()
+						}
+					}
+				case "bool":
+					if ii != x.Len()-1 {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatBool(x.Index(ii).Elem().Bool()) + ","
+						}
+					} else {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatBool(x.Index(ii).Elem().Bool())
 						}
 					}
 				case "time.Time":
@@ -112,7 +124,7 @@ func grabrows(r interface{}) string {
 						}
 					}
 				}
-				Scanner.Scan()
+				//Scanner.Scan()
 
 			}
 		}
