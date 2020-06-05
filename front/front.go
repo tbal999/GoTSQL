@@ -69,18 +69,29 @@ func BuildPage(filename, contents string) {
 	}
 }
 
+func getPort() string {
+	p := os.Getenv("PORT")
+	fmt.Println(p)
+	if p != "" {
+		return ":" + p
+	}
+	return ":8080"
+}
+
 //LaunchServer starts up the server
-func LaunchServer() {
+func LaunchServer() string {
+	port := getPort()
 	fmt.Printf(`
 ---Lauching---
 `)
 	fmt.Println("To exit this programme just CTRL-C at console, or exit via the website GUI")
 	fmt.Println("Opening browser...")
-	OpenBrowser("http://127.0.0.1:9090/")
-	err := http.ListenAndServe(":9090", nil) // setting listening port
+	OpenBrowser("http://127.0.0.1" + port + "/")
+	err := http.ListenAndServe(port, nil) // setting listening port
 
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("Opened")
+	return port
 }
