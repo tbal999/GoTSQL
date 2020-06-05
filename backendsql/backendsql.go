@@ -1,10 +1,12 @@
 package backendsql
 
 import (
+	"bufio"
 	"context"
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"strconv"
 
@@ -45,25 +47,73 @@ func columnheaders(r interface{}) string {
 }
 
 func grabrows(r interface{}) string {
+	Scanner := bufio.NewScanner(os.Stdin)
 	text := ""
 	reflection := reflect.ValueOf(r)
 	for i := 0; i < reflection.NumField(); i++ {
 		if reflection.Field(i).String() == "<[]driver.Value Value>" {
 			x := reflection.Field(i)
 			for ii := 0; ii < x.Len(); ii++ {
-				if ii != x.Len()-1 {
-					if x.Index(ii).Elem().String() == "<invalid Value>" {
-						text += "" + ","
+				switch x.Index(ii).Elem().Type().String() {
+				case "string":
+					if ii != x.Len()-1 {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += x.Index(ii).Elem().String() + ","
+						}
 					} else {
-						text += x.Index(ii).Elem().String() + ","
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += x.Index(ii).Elem().String()
+						}
 					}
-				} else {
-					if x.Index(ii).Elem().String() == "<invalid Value>" {
-						text += "" + ","
+				case "time.Time":
+					if ii != x.Len()-1 {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							//text += x.Index(ii).Elem().Format("2008-02-28")
+						}
 					} else {
-						text += x.Index(ii).Elem().String()
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							//text += x.Index(ii).Elem().Format("2008-02-28")
+						}
+					}
+				case "int64":
+					if ii != x.Len()-1 {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10) + ","
+						}
+					} else {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10)
+						}
+					}
+				case "float64":
+					if ii != x.Len()-1 {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64) + ","
+						}
+					} else {
+						if x.Index(ii).Elem().String() == "<invalid Value>" {
+							text += "" + ","
+						} else {
+							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64)
+						}
 					}
 				}
+				Scanner.Scan()
+
 			}
 		}
 	}
