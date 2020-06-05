@@ -52,80 +52,28 @@ func grabrows(r interface{}) string {
 		if reflection.Field(i).String() == "<[]driver.Value Value>" {
 			x := reflection.Field(i)
 			for ii := 0; ii < x.Len(); ii++ {
-				switch x.Index(ii).Elem().Type().String() {
-				case "string":
-					if ii != x.Len()-1 {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
+				if ii != x.Len()-1 {
+					switch x.Index(ii).IsNil() {
+					case false:
+						switch x.Index(ii).Elem().Type().String() {
+						case "string":
 							text += x.Index(ii).Elem().String() + ","
-						}
-					} else {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							text += x.Index(ii).Elem().String()
-						}
-					}
-				case "bool":
-					if ii != x.Len()-1 {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
+						case "bool":
 							text += strconv.FormatBool(x.Index(ii).Elem().Bool()) + ","
-						}
-					} else {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							text += strconv.FormatBool(x.Index(ii).Elem().Bool())
-						}
-					}
-				case "time.Time":
-					if ii != x.Len()-1 {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							//text += x.Index(ii).Elem().Format("2008-02-28")
-						}
-					} else {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							//text += x.Index(ii).Elem().Format("2008-02-28")
-						}
-					}
-				case "int64":
-					if ii != x.Len()-1 {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
+						case "time.Time":
+							text += "DATETIME_type,"
+						case "int64":
 							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10) + ","
-						}
-					} else {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10)
-						}
-					}
-				case "float64":
-					if ii != x.Len()-1 {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
+						case "float64":
 							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64) + ","
+						default:
+							text += "OTHER_type,"
 						}
-					} else {
-						if x.Index(ii).Elem().String() == "<invalid Value>" {
-							text += "" + ","
-						} else {
-							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64)
-						}
+					case true:
+						text += ","
 					}
 				}
 				//Scanner.Scan()
-
 			}
 		}
 	}
