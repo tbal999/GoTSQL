@@ -1,6 +1,6 @@
 "# GoTSQL" 
 
-Can be placed on the web so you can connect to MS SQL servers everywhere (as long as you can form the connection!)
+Can be placed on the web so you can connect to MS SQL servers online (as long as you can form the network connection!)
 
 Bugs:
 At the moment it can only pull string values
