@@ -8,29 +8,11 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"unsafe"
 
 	_ "github.com/denisenkom/go-mssqldb"
-	_ "github.com/howeyc/gopass"
 )
 
 var db *sql.DB
-
-func appendSlice(x []string, y *[][]string) {
-	slice := *y
-	slice = append(slice, x)
-	*y = slice
-}
-
-func printSlice(y [][]string) {
-	for i := range y {
-		fmt.Println(y[i])
-	}
-}
-
-func convert(f interface{}) interface{} {
-	return *(*interface{})(unsafe.Pointer(&f))
-}
 
 func grabrows(r interface{}) string {
 	//Scanner := bufio.NewScanner(os.Stdin)
