@@ -7,6 +7,8 @@ import (
 	"log"
 	"reflect"
 	"strconv"
+	"strings"
+	"unsafe"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/howeyc/gopass"
@@ -26,22 +28,8 @@ func printSlice(y [][]string) {
 	}
 }
 
-func columnheaders(r interface{}) string {
-	text := ""
-	reflection := reflect.ValueOf(r)
-	for i := 0; i < reflection.NumField(); i++ {
-		if reflection.Field(i).String() == "<[]driver.Value Value>" {
-			x := reflection.Field(i)
-			for ii := 0; ii < x.Len(); ii++ {
-				if ii != x.Len()-1 {
-					text += "COLUMN_" + strconv.Itoa(ii+1) + ","
-				} else {
-					text += "COLUMN_" + strconv.Itoa(ii+1)
-				}
-			}
-		}
-	}
-	return text
+func convert(f interface{}) interface{} {
+	return *(*interface{})(unsafe.Pointer(&f))
 }
 
 func grabrows(r interface{}) string {
@@ -49,6 +37,7 @@ func grabrows(r interface{}) string {
 	text := ""
 	reflection := reflect.ValueOf(r)
 	for i := 0; i < reflection.NumField(); i++ {
+		//fmt.Println(reflection.Field(i).Kind())
 		if reflection.Field(i).String() == "<[]driver.Value Value>" {
 			x := reflection.Field(i)
 			for ii := 0; ii < x.Len(); ii++ {
@@ -60,20 +49,37 @@ func grabrows(r interface{}) string {
 							text += x.Index(ii).Elem().String() + ","
 						case "bool":
 							text += strconv.FormatBool(x.Index(ii).Elem().Bool()) + ","
-						case "time.Time":
-							text += "DATETIME_type,"
+						//case "time.Time":
+						//	text += "DATETIME_type" //Haven't figured out how to convert this type into a string yet.
 						case "int64":
 							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10) + ","
 						case "float64":
 							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64) + ","
 						default:
-							text += "OTHER_type,"
+							text += "OTHER_type," //Pick up any other types here.
 						}
 					case true:
 						text += ","
 					}
+				} else {
+					switch x.Index(ii).IsNil() {
+					case false:
+						switch x.Index(ii).Elem().Type().String() {
+						case "string":
+							text += x.Index(ii).Elem().String()
+						case "bool":
+							text += strconv.FormatBool(x.Index(ii).Elem().Bool())
+						//case "time.Time":
+						//	text += "DATETIME_type" //Haven't figured out how to convert this type into a string yet.
+						case "int64":
+							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10)
+						case "float64":
+							text += strconv.FormatFloat(x.Index(ii).Elem().Float(), 'f', 6, 64)
+						default:
+							text += "OTHER_type" //Pick up other types here.
+						}
+					}
 				}
-				//Scanner.Scan()
 			}
 		}
 	}
@@ -93,10 +99,15 @@ func read(query string) (int, []string, error) {
 	}
 	defer rows.Close()
 	var count int
+	cols, errr := rows.Columns()
+	if err != nil {
+		return -1, result, err
+	}
+	columnHeaders := strings.Join(cols, ",")
 	firstrow := true
 	for rows.Next() {
 		if firstrow == true {
-			result = append(result, columnheaders(*rows))
+			result = append(result, columnHeaders)
 			result = append(result, grabrows(*rows))
 			firstrow = false
 		} else {
