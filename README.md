@@ -3,7 +3,7 @@
 You can connect to Microsoft SQL servers via this web app, and submit SQL queries and get results with it.
 You can also save any results to CSV file contained within 'outputsaves' folder where the app is kept.
 
-The point of this tool is to show that you can use reflection to grab all the information you need and convert it into CSV.
+The purpose of this tool is to show that you can use reflection to grab all the information you need and convert it into CSV. 
 
 Bugs:
 1) It can't parse date.time types so if you have a date/time column - cast it to varchar and it will parse.
