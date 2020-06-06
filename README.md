@@ -1,6 +1,6 @@
 "# GoTSQL" 
 
-Can be placed on the web so you can connect to MS SQL servers online (as long as you can form the network connection!)
+Can be placed on the web so you can connect to MS SQL servers online.
 
 The point of this tool is to show that you can use reflection to grab all the information you need and convert it into CSV.
 
