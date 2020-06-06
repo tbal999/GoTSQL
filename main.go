@@ -173,7 +173,7 @@ func main() {
 		</form>
 
 		 <form action="/ui/save" method="POST">
-		 <input type="text" name="outputname" placeholder="filename" size="50"><label><- Type name of the CSV file you want to save</label><p>
+		 <input type="text" name="outputname" placeholder="filename" size="50"><label><- Type name of the CSV file you want to save (saved to 'outputsaves' folder in filepath)</label><p>
 		<button type="submit" style="background-color: #00FFFF;" value="saveoutput">Save output to CSV</button>
 		{{.Outputresults}}
 		</form>
