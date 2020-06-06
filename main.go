@@ -69,26 +69,48 @@ func start(w http.ResponseWriter, r *http.Request) {
 	if len(r.Form["sqlLogin"]) != 0 && r.Form["sqlLogin"][0] != "" {
 		sqlLogin += r.Form["sqlLogin"][0]
 	}
-	if len(r.Form["sqlQuery"]) != 0 && r.Form["sqlQuery"][0] != "" {
+	if len(r.Form["sqlQuery"]) != 0 && r.Form["sqlQuery"][0] != "" { //tablequery
 		sqlQuery += r.Form["sqlQuery"][0]
 		HomePageVars.SqlQuery = r.Form["sqlQuery"][0]
-	}
-	count, results, err := backendsql.SQLquery(sqlLogin, sqlQuery)
-	if err != nil {
-		HomePageVars.Output = "Error: \n" + err.Error()
-		err22 := t.Execute(w, HomePageVars)
-		if err22 != nil { // if there is an error
-			log.Print("template executing error: ", err) //log it
+		count, results, err := backendsql.SQLquery(sqlLogin, sqlQuery)
+		if err != nil {
+			HomePageVars.Output = "Error: \n" + err.Error()
+			err22 := t.Execute(w, HomePageVars)
+			if err22 != nil { // if there is an error
+				log.Print("template executing error: ", err) //log it
+			}
+			return
 		}
-		return
+		fmt.Printf("Sucessfully pulled %d rows.\n", count)
+		text := ""
+		for index := range results {
+			text += results[index] + "\n"
+		}
+		store = text
+		HomePageVars.Output = text
 	}
-	fmt.Printf("Sucessfully pulled %d rows.\n", count)
-	text := ""
-	for index := range results {
-		text += results[index] + "\n"
+	if len(r.Form["tablequery"]) != 0 && r.Form["sqlQuery"][0] == "" {
+		sqlQuery += "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'" + r.Form["tablequery"][0] + "'"
+		HomePageVars.SqlQuery = sqlQuery
+		count, results, err := backendsql.SQLquery(sqlLogin, sqlQuery)
+		if err != nil {
+			HomePageVars.Output = "Error: \n" + err.Error()
+			err22 := t.Execute(w, HomePageVars)
+			if err22 != nil { // if there is an error
+				log.Print("template executing error: ", err) //log it
+			}
+			return
+		}
+		fmt.Printf("Sucessfully pulled %d rows.\n", count)
+		text := ""
+		for index := range results {
+			if index != 0 {
+				text += results[index] + "\n"
+			}
+		}
+		store = text
+		HomePageVars.Output = text
 	}
-	store = text
-	HomePageVars.Output = text
 	err2 := t.Execute(w, HomePageVars)
 	if err2 != nil { // if there is an error
 		log.Print("template executing error: ", err) //log it
@@ -144,7 +166,8 @@ func main() {
     <p>A simple front-end interface for TSQL.</p>
     <form action="/ui/start" method="POST">
         <p> <input type="text" name="sqlLogin" placeholder="Server=localhost;Database=master;Trusted_Connection=True;" size="50"><label> <- Type in the SQL login details here (i.e Server=localhost;Database=master;Trusted_Connection=True;)</label></p>
-        <textarea name="sqlQuery" cols="90" rows="20" placeholder"Type your SQL query here">{{.SqlQuery}}</textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="output" cols="90" rows="20">{{.Output}}</textarea><br />
+		<p> <input type="text" name="tablequery" placeholder="table name" size="50"><label> <- Type in table name here to grab column information for queries</label></p>
+		<textarea name="sqlQuery" cols="90" rows="20" placeholder"Type your SQL query here">{{.SqlQuery}}</textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="output" cols="90" rows="20">{{.Output}}</textarea><br />
         <br>
 		<button type="submit" style="background-color: #00FFFF;" value="submitquery">Submit query</button>
 		</form>
