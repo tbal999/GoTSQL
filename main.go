@@ -161,9 +161,9 @@ func main() {
         }
     </style>
     <a href="https://imgbb.com/"><img src="https://i.ibb.co/dDg4kWH/images.png" alt="SQL-LOGO" border="0"></a>
-    <p><b>GO QL (Go) - Front-end SQL interface</b></p>
+    <p><b>GO QL (Go) - Front-end MSSQL interface</b></p>
     <p>GO QL</p>
-    <p>A simple front-end interface for TSQL.</p>
+    <p>A front-end interface for MSSQL.</p>
     <form action="/ui/start" method="POST">
         <p> <input type="text" name="sqlLogin" placeholder="Server=localhost;Database=master;Trusted_Connection=True;" size="50"><label> <- Type in the SQL login details here (i.e Server=localhost;Database=master;Trusted_Connection=True;)</label></p>
 		<p> <input type="text" name="tablequery" placeholder="table name" size="50"><label> <- Type in table name here to grab column information for queries</label></p>
