@@ -8,11 +8,42 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
 var db *sql.DB
+
+func getField(v interface{}, field int) string {
+	r := reflect.ValueOf(v)
+	f := reflect.Indirect(r).Field(field)
+	fieldValue := f.Interface()
+
+	switch v := fieldValue.(type) {
+	case int64:
+		return strconv.FormatInt(v, 10)
+	case int32:
+		return strconv.FormatInt(int64(v), 10)
+	case int:
+		return strconv.FormatInt(int64(v), 10)
+	case string:
+		return v
+	case bool:
+		if v {
+			return "true"
+		}
+		return "false"
+	case time.Time:
+		return v.String()
+	default:
+		return ""
+	}
+}
+
+type Something struct {
+	T *time.Time
+}
 
 func grabrows(r interface{}) string {
 	//Scanner := bufio.NewScanner(os.Stdin)
@@ -31,8 +62,10 @@ func grabrows(r interface{}) string {
 							text += x.Index(ii).Elem().String() + ","
 						case "bool":
 							text += strconv.FormatBool(x.Index(ii).Elem().Bool()) + ","
-						//case "time.Time":
-						//	text += "DATETIME_type" //Haven't figured out how to convert this type into a string yet.
+						case "time.Time":
+							text += "(Change_to_VARCHAR)," //Reflecting to time.Time value doesn't seem to work as far as I can see.
+							//timestring, _ := reflect.ValueOf(x.Index(ii).Elem()).Interface().(time.Time)
+							//fmt.Println(timestring)
 						case "int64":
 							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10) + ","
 						case "float64":
@@ -51,8 +84,8 @@ func grabrows(r interface{}) string {
 							text += x.Index(ii).Elem().String()
 						case "bool":
 							text += strconv.FormatBool(x.Index(ii).Elem().Bool())
-						//case "time.Time":
-						//	text += "DATETIME_type" //Haven't figured out how to convert this type into a string yet.
+						case "time.Time":
+							text += "(Change_to_VARCHAR)"
 						case "int64":
 							text += strconv.FormatInt(x.Index(ii).Elem().Int(), 10)
 						case "float64":
@@ -81,7 +114,7 @@ func read(query string) (int, []string, error) {
 	}
 	defer rows.Close()
 	var count int
-	cols, errr := rows.Columns()
+	cols, err := rows.Columns()
 	if err != nil {
 		return -1, result, err
 	}
