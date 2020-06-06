@@ -1,6 +1,7 @@
 "# GoTSQL" 
 
-Can be placed on the web so you can connect to MS SQL servers online.
+You can connect to Microsoft SQL servers via this web app, and submit SQL queries and get results with it.
+You can also save any results to CSV file contained within 'outputsaves' folder where the app is kept.
 
 The point of this tool is to show that you can use reflection to grab all the information you need and convert it into CSV.
 
