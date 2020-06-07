@@ -86,7 +86,7 @@ func LaunchServer() string {
 `)
 	fmt.Println("To exit this programme just CTRL-C at console, or exit via the website GUI")
 	fmt.Println("Opening browser...")
-	//OpenBrowser("http://127.0.0.1" + port + "/")
+	OpenBrowser("http://127.0.0.1" + port + "/")
 	err := http.ListenAndServe(port, nil) // setting listening port
 
 	if err != nil {
