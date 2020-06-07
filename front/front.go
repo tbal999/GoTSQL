@@ -11,7 +11,7 @@ import (
 )
 
 //PageVariables Front-end GUI struct and functions
-//GUI variables that change on webpages.
+//GUI variables that change on webpages. This is just a template.
 type PageVariables struct {
 	var1 string
 }
@@ -31,7 +31,7 @@ func WriteToFile(filename string, data string) error {
 	return file.Sync()
 }
 
-//OpenBrowser - Opens browser, depending on the OS you are on.
+//OpenBrowser - Opens your default browser, depending on the OS you are on.
 func OpenBrowser(url string) {
 	var err error
 
@@ -60,7 +60,7 @@ func EnsureDir(dirName string) error {
 	}
 }
 
-//BuildPage - Lets you create a front-end webpage
+//BuildPage - Lets you create a front-end webpage as a GTPL file if you want to.
 func BuildPage(filename, contents string) {
 	EnsureDir("ui")
 	fileError := WriteToFile("./ui/"+filename+".gtpl", contents)
