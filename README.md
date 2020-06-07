@@ -3,7 +3,7 @@
 https://gosqlonline.herokuapp.com/
 
 You can connect to Microsoft SQL servers via this web app, and submit dyanmic SQL queries and get results with it.
-You can also save any results to CSV file contained within 'outputsaves' folder which is generated within the folder the application is kept.
+You can also save any results to CSV file contained within 'outputsaves' folder which is generated within the folder the application is kept. (The online app 'save' function doesn't work as it's meant to be used locally).
 
 The purpose of this tool is to show that you can use reflection to deserialize the results of SQL queries. 
 
