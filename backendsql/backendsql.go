@@ -56,10 +56,10 @@ func read(query string) (int, []string, error) {
 	for rows.Next() {
 		if firstrow == true {
 			result = append(result, columnHeaders)
-			result = append(result, grabrows(rows))
+			result = append(result, grabrows(*rows))
 			firstrow = false
 		} else {
-			result = append(result, grabrows(rows))
+			result = append(result, grabrows(*rows))
 		}
 		count++
 	}
