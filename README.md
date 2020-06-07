@@ -1,7 +1,7 @@
 "# GoTSQL" 
 
 https://gosqlonline.herokuapp.com/
-**JUST AN EXAMPLE OF THE APP ONLINE**
+JUST AN EXAMPLE OF THE APP ONLINE /\
 Normally you wouldn't open a SQL database to the internet! If you want to use this app download it and use it on a PC for local SQL intranet.
 
 You can connect to Microsoft SQL servers via this web app, and submit dyanmic SQL queries and get results with it.
