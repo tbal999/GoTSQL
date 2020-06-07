@@ -11,6 +11,40 @@ import (
 	"text/template"
 )
 
+var mapage = `<title>GO QL - Front-end SQL</title>
+</head>
+
+<body>
+    <style>
+        input {
+            display: inline-block;
+            float: left;
+            margin-right: 20px;
+            background-color: #00FFFF
+        }
+    </style>
+    <a href="https://imgbb.com/"><img src="https://i.ibb.co/dDg4kWH/images.png" alt="SQL-LOGO" border="0"></a>
+    <p><b>GO QL (Go) - Front-end SQL interface</b></p>
+    <p>GO QL</p>
+    <p>A simple front-end interface for TSQL.</p>
+    <form action="/ui/start" method="POST">
+        <p> <input type="text" name="sqlLogin" placeholder="Server=localhost;Database=master;Trusted_Connection=True;" size="50"><label> <- Type in the SQL login details here (i.e Server=localhost;Database=master;Trusted_Connection=True;)</label></p>
+		<p> <input type="text" name="tablequery" placeholder="table name" size="50"><label> <- Type in table name here to grab column information for queries</label></p>
+		<textarea name="sqlQuery" cols="90" rows="20" placeholder"Type your SQL query here">{{.SqlQuery}}</textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="output" cols="90" rows="20">{{.Output}}</textarea><br />
+        <br>
+		<button type="submit" style="background-color: #00FFFF;" value="submitquery">Submit query</button>
+		</form>
+
+		 <form action="/ui/save" method="POST">
+		 <input type="text" name="outputname" placeholder="filename" size="50"><label><- Type name of the CSV file you want to save</label><p>
+		<button type="submit" style="background-color: #00FFFF;" value="saveoutput">Save output to CSV</button>
+		{{.Outputresults}}
+		</form>
+
+	 <br/>
+    <br>
+</body>`
+
 //PageVariables - GUI variables that change on webpages.
 type PageVariables struct {
 	Output        string
@@ -30,6 +64,7 @@ func ensureDir(dirName string) error {
 	}
 }
 
+//Writes to a file
 func writeToFile(filename string, data string) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -44,8 +79,9 @@ func writeToFile(filename string, data string) error {
 	return file.Sync()
 }
 
+//Main page handler - the front page.
 func mainpage(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./ui/mainpage.gtpl")
+	t, err := template.New("mainpage").Parse(mapage)
 	if err != nil { // if there is an error
 		log.Print("template executing error: ", err) //log it
 	}
@@ -56,9 +92,10 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Function that handles displaying the SQL results / saving data.
 func start(w http.ResponseWriter, r *http.Request) {
 	store = ""
-	t, err := template.ParseFiles("./ui/mainpage.gtpl")
+	t, err := template.New("mainpage").Parse(mapage)
 	if err != nil { // if there is an error
 		log.Print("template executing error: ", err) //log it
 	}
@@ -118,7 +155,7 @@ func start(w http.ResponseWriter, r *http.Request) {
 }
 
 func save(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./ui/mainpage.gtpl")
+	t, err := template.New("mainpage").Parse(mapage)
 	if err != nil { // if there is an error
 		log.Print("template executing error: ", err) //log it
 	}
@@ -147,40 +184,6 @@ func main() {
 	http.HandleFunc("/", mainpage)
 	http.HandleFunc("/ui/start", start)
 	http.HandleFunc("/ui/save", save)
-	front.BuildPage("mainpage",
-		`<title>GO QL - Front-end SQL</title>
-</head>
-
-<body>
-    <style>
-        input {
-            display: inline-block;
-            float: left;
-            margin-right: 20px;
-            background-color: #00FFFF
-        }
-    </style>
-    <a href="https://imgbb.com/"><img src="https://i.ibb.co/dDg4kWH/images.png" alt="SQL-LOGO" border="0"></a>
-    <p><b>GO QL (Go) - Front-end MSSQL interface</b></p>
-    <p>GO QL</p>
-    <p>A front-end interface for MSSQL.</p>
-    <form action="/ui/start" method="POST">
-        <p> <input type="text" name="sqlLogin" placeholder="Server=localhost;Database=master;Trusted_Connection=True;" size="50"><label> <- Type in the SQL login details here (i.e Server=localhost;Database=master;Trusted_Connection=True;)</label></p>
-		<p> <input type="text" name="tablequery" placeholder="table name" size="50"><label> <- Type in table name here to grab column information for queries</label></p>
-		<textarea name="sqlQuery" cols="90" rows="20" placeholder"Type your SQL query here">{{.SqlQuery}}</textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="output" cols="90" rows="20">{{.Output}}</textarea><br />
-        <br>
-		<button type="submit" style="background-color: #00FFFF;" value="submitquery">Submit query</button>
-		</form>
-
-		 <form action="/ui/save" method="POST">
-		 <input type="text" name="outputname" placeholder="filename" size="50"><label><- Type name of the CSV file you want to save (saved to 'outputsaves' folder in filepath)</label><p>
-		<button type="submit" style="background-color: #00FFFF;" value="saveoutput">Save output to CSV</button>
-		{{.Outputresults}}
-		</form>
-
-	 <br/>
-    <br>
-</body>`)
 	serverPort := front.LaunchServer()
 	err2 := http.ListenAndServe(serverPort, nil) // setting listening port
 	if err2 != nil {
