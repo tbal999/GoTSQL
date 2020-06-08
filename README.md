@@ -1,6 +1,6 @@
 "# GoTSQL" 
 
-If you want to use this app download it and use it on a PC for local SQL intranet.
+If you want to use this app download it, build it and use it on a PC for local SQL intranet.
 
 You can connect to Microsoft SQL servers via this web app, and submit dyanmic SQL queries and get results with it.
 You can also save any results to CSV file contained within 'outputsaves' folder which is generated within the folder the application is kept. 
