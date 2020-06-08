@@ -110,7 +110,7 @@ func typeswitch(x reflect.Value, lastitem bool) string {
 			case "float64":
 				text += strconv.FormatFloat(x.Elem().Float(), 'f', 6, 64) + ","
 			default:
-				text += x.Elem().Type().String() + "_type," //Pick up any other types here.
+				text += x.Elem().Type().String() + "_type_(Change_to_VARCHAR)," //Pick up any other types here.
 			}
 		case true:
 			text += ","
@@ -124,7 +124,7 @@ func typeswitch(x reflect.Value, lastitem bool) string {
 			case "bool":
 				text += strconv.FormatBool(x.Elem().Bool())
 			case "time.Time":
-				text += "(Change_to_VARCHAR)," //Reflecting to time.Time value doesn't seem to work as far as I can see.
+				text += "(Change_to_VARCHAR)" //Reflecting to time.Time value doesn't seem to work as far as I can see.
 				//timestring, _ := reflect.ValueOf(x.Index(ii).Elem()).Interface().(time.Time)
 				//fmt.Println(timestring)
 			case "int64":
@@ -132,7 +132,7 @@ func typeswitch(x reflect.Value, lastitem bool) string {
 			case "float64":
 				text += strconv.FormatFloat(x.Elem().Float(), 'f', 6, 64)
 			default:
-				text += x.Elem().Type().String() + "_type" //Pick up any other types here.
+				text += x.Elem().Type().String() + "_type_(Change_to_VARCHAR)" //Pick up any other types here.
 			}
 		}
 	}
