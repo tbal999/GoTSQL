@@ -88,7 +88,8 @@ func grabrows(r interface{}) string {
 }
 
 //typeswitch returns a string that you append to the 'text' variable in the grabrows function.
-//It switches on reflect.Value type and converts the item into a string to be returned.
+//It switches on reflect.Value type casted as a string and converts the item into a string to be returned.
+//switch x.Elem().Type() didn't seem to work unfortunately.
 func typeswitch(x reflect.Value, lastitem bool) string {
 	var text = ""
 	switch lastitem {
