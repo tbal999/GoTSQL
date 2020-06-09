@@ -1,6 +1,6 @@
 "# GoTSQL" 
 
-This also works as a web-app! Buuuht it's really designed for local use i.e build it and use it on a PC for local SQL intranet.
+This also works as a web-app, but it's really designed for local use i.e build it and use it on a PC for local SQL intranet.
 
 You can connect to Microsoft SQL servers via this web app and submit dyanmic SQL queries and get results with it.
 You can also save any results to CSV file contained within 'outputsaves' folder which is generated within the folder the application is kept. 
